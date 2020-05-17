@@ -47,10 +47,7 @@ module.exports = function(app) {
                 index = i;
             }
 
-            let partnerImage = friendsList[index].photo
-            let partnerName = friendsList[index].name
-            console.log("Partner photo: ", partnerImage);
-            console.log("Partner name: ", partnerName);
+            
 
         res.json(friendsList[index]);
     });

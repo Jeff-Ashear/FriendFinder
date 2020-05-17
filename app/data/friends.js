@@ -33,3 +33,5 @@ let friendList = [
     }
 
 ]
+
+module.exports = friendList
