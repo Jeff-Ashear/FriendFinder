@@ -6,11 +6,11 @@ var surveyData = "Some array from somewhere";
 
 module.exports = function(app) {
 
-    app.get("../data/friends", function(request, response) {
+    app.get("/data/friends", function(request, response) {
         response.json(friendsList);
     });
 
-    app.post("../data/friends", function(request, response) {
+    app.post("/data/friends", function(request, response) {
         console.log("what do I do with this guy?");
         
     });
@@ -23,35 +23,56 @@ module.exports = function(app) {
         //calculate difference between each question from the current friend, and the smallest difference is the friend that comes back.
         //use res.json
 
-        var scores = [];
-        for (var i = 0; i < friendsList.length; i++) {
+        var theChosenOne = {
+            friend: {},
+            totalDistance: 9999999999
+        };
+
+        for (var i = 1; i < friendsList.length; i++) {
             let totalScore = 0;
 
-            for (var j = 0; j < friendsList[i]; j++) {
-                let currentFriendScore = Number(currentFriend["question" + j]);
-                let compairedFriendScore = friendsList[i].scores[i];
 
-                let scoreDiff = Math.abs(currentFriendScore - compairedFriendScore);
-                totalScore += scoreDiff;
+
+            var friend = friendsList[i];
+            let fScores = friend.scores;
+            let uScores = currentFriend.scores;
+            let diffScores = [];
+            for (var j = 0; j < fScores.length; j++) {
+                let diff = Math.abs(parseInt(uScores[j]) - fScores[j]);
+                console.log("the diff", diff)
+                diffScores.push(diff);
+                //let currentFriendScore = Number(currentFriend["question" + j]);
+                // let compairedFriendScore = friendsList[i].scores[i];
+
+                // let scoreDiff = Math.abs(currentFriendScore - compairedFriendScore);
+                //totalScore += scoreDiff;
             }
-
-            scores.push(totalScore);
+            let difScores = diffScores.reduce((a,b)=> a+b)
+            console.log(difScores)
+            if(theChosenOne.totalDistance > difScores) {
+                theChosenOne.totalDistance = difScores;
+                theChosenOne.friend = friend; 
+                console.log(friend)
+                console.log("chose", theChosenOne);
+            }
+            //scores.push(totalScore);
         }
 
-        var smallestScore = scores[1];
-        var index = 0;
+        // var smallestScore = scores[1];
+        // var index = 0;
 
-        for (var i = 0; i < smallestScore.lenght; i++);
-            if (smallestScore > scores[i]) {
-                samllestScore = scores[i];
-                index = i;
-            }
+        // for (var i = 0; i < smallestScore.length; i++);
+        //     if (smallestScore > scores[i]) {
+        //         samllestScore = scores[i];
+        //         index = i;
+        //     }
 
-            let partnerImage = friendsList[index].photo
-            let partnerName = friendsList[index].name
-            console.log("Partner photo: ", partnerImage);
-            console.log("Partner name: ", partnerName);
+        //     let partnerImage = friendsList[index].photo
+        //     let partnerName = friendsList[index].name
+        //     console.log("Partner photo: ", partnerImage);
+        //     console.log("Partner name: ", partnerName);
 
-        res.json(friendsList[index]);
+            res.json(theChosenOne.friend)
+        //res.json(friendsList[index]);
     });
 };

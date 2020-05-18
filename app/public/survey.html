@@ -41,36 +41,21 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+#theChosenPhoto {
+    max-width: 400px;
+}
     </style>
 
-<script>
-    var modal = document.getElementById("resultModal");
-var btn = document.getElementById("resultModalBtn");
-var span = document.getElementsByClassName("close")[0];
 
-btn.onclick = function() {
-    modal.style.dispaly = block;
-    console.log("modal button clicked")
-}
-
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-window.onclick = function(event) {
-    if (event.target == modal) {
-        this.modal.style.display = "none";
-    }
-}
-</script>
 </head>
 <body>
-    <form method="POST" action="/api/friends">
+    <form >
         <h2>Survey time!</h2><br>
         <h4>Lets see if we can find you a climbing partner.<br>
         Answer each question with a 1 if you strongly disagree, a 5 if you strongly agree, etc.</h4><br><br>
         <div class="form">
-            <!-- <input type="text" name="userName" id="userName" placeholder="Your name here." /> -->
+            <input type="text" name="userName" id="userName" placeholder="Your name here." />
         </div>
         <ul>
             <li>
@@ -108,7 +93,7 @@ window.onclick = function(event) {
                 <select class="question" name="question4" id="question4">
                     <option value="1">Strongly Disagree</option>
                     <option value="2">Disagree</option>
-                    <option value="3">No Bid Deal</option>
+                    <option value="3">No Big Deal</option>
                     <option value="4">Agree</option>
                     <option value="5">Strongly Agree</option>
                 </select>
@@ -118,7 +103,7 @@ window.onclick = function(event) {
                 <select class="question" name="question5" id="question5">
                     <option value="1">Strongly Disagree</option>
                     <option value="2">Disagree</option>
-                    <option value="3">No Bid Deal</option>
+                    <option value="3">No Big Deal</option>
                     <option value="4">Agree</option>
                     <option value="5">Strongly Agree</option>
                 </select>
@@ -174,17 +159,91 @@ window.onclick = function(event) {
             </li>
         </ul><br>
         <p>Click here to submit your form and find a partner.</p>
-        <button type="submit" id="resultModalBtn">Sumbit</button>
+        <button id="resultModalBtn" type="submit">Sumbit</button>
     </form>
-        <button id="resultModalBtn">Modal Test</button>
+        <!-- <button id="resultModalBtn">Modal Test</button> -->
 
     <div id="resultModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <p>Testing...</p>
+            <img id="theChosenPhoto" src="" />
+            <h2 id="theChosenOne"></h2><br>
+            <p id="theChosenScores"></p>
         </div>
 
     </div>
+
+    <script>
+        var modal = document.getElementById("resultModal");
+    var btn = document.getElementById("resultModalBtn");
+    var span = document.getElementsByClassName("close")[0];
+    
+    btn.onclick = function(e) {
+        e.preventDefault();
+        modal.style.display = 'block';
+        console.log("modal button clicked")
+        let thisUser = $("#userName").val().trim();
+        let question1 = $("#question1").val();
+        let question2 = $("#question2").val();
+        let question3 = $("#question3").val();
+        let question4 = $("#question4").val();
+        let question5 = $("#question5").val();
+        let question6 = $("#question6").val();
+        let question7 = $("#question7").val();
+        let question8 = $("#question8").val();
+        let question9 = $("#question9").val();
+        let question10 = $("#question10").val();
+
+        let newUser = {
+            name: thisUser,
+            scores: [
+                question1,
+                question2,
+                question3,
+                question4,
+                question5,
+                question6,
+                question7,
+                question8,
+                question9,
+                question10
+            ]
+        };
+
+        $.ajax ({
+            url: '/api/friends',
+            method: 'POST',
+            data: newUser
+        }).then(function(response) {
+            console.log(response)
+            modal.style.display='block';
+            $("#theChosenOne").html(response.name)
+            $("#theChosenPhoto").attr('src',response.photo)
+            $('#theChosenScores').text(response.scores, ", ")
+
+        })
+        console.log(newUser);
+
+
+        // $.ajax ({
+        //     url: '/api/friends',
+        //     method: 'GET'
+        // }).then( function(response) {
+        //     console.log('response: ', response)
+        // })
+       
+    }
+    
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            this.modal.style.display = "none";
+        }
+    }
+    </script>
 
 </body>
 
